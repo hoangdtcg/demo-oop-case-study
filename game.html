@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script src="Circle.js"></script>
+</head>
+<body>
+<canvas id="myCanvas" width="800px" height="600px" style="background-color: bisque"></canvas>
+<!--<canvas id="myCanvas2" width="400px" height="600px" style="background-color: #b6d779"></canvas>-->
+<script>
+  let canvas = document.getElementById('myCanvas');
+  let pen = canvas.getContext('2d');
+
+  let circle = new Circle(100,100);
+  let enemy = new Circle(400,100,"red");
+
+  // setInterval(move,50);
+
+  function move() {
+    if(circle.x >= canvas.width - circle.radius || circle.x <= circle.radius){
+        alert("Die")
+    }
+    if(circle.y >= canvas.height - circle.radius || circle.y <= circle.radius){
+        alert("Die")
+    }
+    pen.clearRect(0,0,canvas.width,canvas.height);
+    circle.move();
+    circle.render(canvas);
+    enemy.render(canvas);
+    if(checkCrash(circle,enemy)){
+        let randX = Math.floor(Math.random()*canvas.width);
+        let randY = Math.floor(Math.random()*canvas.height);
+        enemy.y = randY;
+        enemy.x = randX;
+    }
+    requestAnimationFrame(move)
+  }
+
+  function checkCrash(obj1,obj2) {
+      let left1 = obj1.x - obj1.radius;
+      let right1 = obj1.x + obj1.radius;
+      let top1 = obj1.y - obj1.radius;
+      let bottom1 = obj1.y + obj1.radius;
+
+      let left2 = obj2.x - obj2.radius;
+      let right2 = obj2.x + obj2.radius;
+      let top2 = obj2.y - obj2.radius;
+      let bottom2 = obj2.y + obj2.radius;
+
+      if(left1 > right2 || right1 < left2 || top1 > bottom2 || bottom1 < top2){
+          return false;
+      }
+      return true;
+  }
+
+  window.addEventListener("keydown",movePlayer);
+  function movePlayer(evt) {
+      switch (evt.key) {
+          case "ArrowLeft":
+          case "a":
+              circle.dir = "left";
+              break;
+          case "ArrowRight":
+          case "d":
+              circle.dir = "right";
+              break;
+          case "ArrowUp":
+          case "w":
+              circle.dir = "up";
+              break;
+          case "ArrowDown":
+          case "s":
+              circle.dir = "down";
+              break;
+      }
+  }
+
+  move();
+</script>
+</body>
+</html>
